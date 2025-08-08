@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CHARLES KE Verification</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: radial-gradient(circle at center, #1e1e2f, #0f0f1a);
+      overflow: hidden;
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 30px;
+      width: 90%;
+      max-width: 450px;
+      text-align: center;
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.1);
+      position: relative;
+      animation: popIn 1s ease-out;
+    }
+
+    @keyframes popIn {
+      from {
+        transform: scale(0.9);
+        opacity: 0;
+      }
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    .logo {
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      border: 3px solid #00ffd5;
+      object-fit: cover;
+      margin-bottom: 20px;
+      animation: float 4s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    .title {
+      font-size: 28px;
+      font-weight: bold;
+      color: white;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 20px;
+      background: linear-gradient(90deg, #00ffd5, #00bfff, #00ffd5);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: shine 3s linear infinite;
+    }
+
+    @keyframes shine {
+      0% { background-position: 0% center; }
+      100% { background-position: 200% center; }
+    }
+
+    .input-container {
+      margin-bottom: 20px;
+    }
+
+    .input-container input {
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid #00bfff;
+      background: rgba(255, 255, 255, 0.05);
+      color: white;
+      font-size: 16px;
+      text-align: center;
+      outline: none;
+    }
+
+    .input-container input::placeholder {
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    .input-container input:focus {
+      border-color: #00ffd5;
+      box-shadow: 0 0 10px rgba(0, 255, 213, 0.3);
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background: linear-gradient(45deg, #00bfff, #00ffd5);
+      border: none;
+      border-radius: 8px;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s ease;
+    }
+
+    button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 12px rgba(0, 255, 213, 0.5);
+    }
+
+    button:disabled {
+      background: gray;
+      cursor: not-allowed;
+      transform: none !important;
+    }
+
+    .status {
+      margin-top: 15px;
+      color: #ffffff;
+      font-size: 14px;
+      min-height: 20px;
+    }
+
+    .success {
+      color: #00ffd5;
+    }
+
+    .error {
+      color: #ff4c4c;
+    }
+
+    .footer {
+      margin-top: 20px;
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    /* Floating circles */
+    .circle {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(0, 255, 213, 0.07);
+      animation: floatUp 15s linear infinite;
+    }
+
+    .circle:nth-child(1) {
+      width: 80px;
+      height: 80px;
+      left: 10%;
+      bottom: -100px;
+      animation-delay: 0s;
+    }
+
+    .circle:nth-child(2) {
+      width: 120px;
+      height: 120px;
+      left: 70%;
+      bottom: -120px;
+      animation-delay: 5s;
+    }
+
+    @keyframes floatUp {
+      0% { transform: translateY(0); opacity: 0.2; }
+      100% { transform: translateY(-110vh); opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="circle"></div>
+  <div class="circle"></div>
+
+  <div class="container">
+    <img src="https://files.catbox.moe/cokbh6.jpeg" alt="CHARLES KE Logo" class="logo" />
+    <h2 class="title">CHARLES KE Verification</h2>
+    <form id="usernameForm">
+      <div class="input-container">
+        <input type="text" id="name" placeholder="GitHub Username" required />
+      </div>
+      <button type="button" id="deployButton" onclick="verify();">
+        <i class="fas fa-cloud-upload-alt"></i> Deploy
+      </button>
+      <div id="statusMessage" class="status"></div>
+    </form>
+    <div class="footer">
+      Powered by CHARLES KE | © 2025 All Rights Reserved
+    </div>
+  </div>
+
+  <script>
+    async function verify() {
+      const username = document.getElementById('name').value.trim();
+      const deployButton = document.getElementById("deployButton");
+      const statusMessage = document.getElementById("statusMessage");
+
+      if (!username) {
+        statusMessage.textContent = "Please enter your GitHub username";
+        statusMessage.className = "status error";
+        return;
+      }
+
+      deployButton.disabled = true;
+      deployButton.innerHTML = "<i class='fas fa-spinner fa-spin'></i> Verifying...";
+      statusMessage.textContent = "Checking GitHub repository...";
+      statusMessage.className = "status";
+
+      try {
+        await axios.get(`https://api.github.com/repos/${username}/CHARLESKE-XMD`);
+        statusMessage.textContent = "Verification successful! Redirecting to Heroku...";
+        statusMessage.className = "status success";
+
+        setTimeout(() => {
+          location.replace(`https://dashboard.heroku.com/new?template=https://github.com/${username}/CHARLESKE-XMD`);
+        }, 1500);
+      } catch (error) {
+        if (error.response && error.response.status === 404) {
+          statusMessage.textContent = "Repository not found. You need to fork it first.";
+          statusMessage.className = "status error";
+          if (confirm("You haven't forked the main repo. Would you like to fork it now?")) {
+            window.open('https://github.com/Charleskenya1/CHARLESKE-XMD/fork', '_blank');
+          }
+        } else {
+          statusMessage.textContent = "Error: " + (error.message || "Please try again later");
+          statusMessage.className = "status error";
+          console.error("Verification error:", error);
+        }
+      } finally {
+        deployButton.disabled = false;
+        deployButton.innerHTML = "<i class='fas fa-cloud-upload-alt'></i> Deploy";
+      }
+    }
+
+    document.getElementById('name').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        verify();
+      }
+    });
+  </script>
+</body>
+    </html>
